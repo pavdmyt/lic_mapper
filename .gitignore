@@ -1,2 +1,6 @@
+# Python specific
 *.py[cod]
+
+# Project specific
+population_script_orig.py
 *.sqlite3

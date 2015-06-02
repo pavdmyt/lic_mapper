@@ -26,7 +26,8 @@ class FeatureID(models.Model):
 class OSSitem(models.Model):
     # !!! TODO: ra_item = models.ForeignKey(RAitem.item_code)
     feature_id = models.ForeignKey(FeatureID)
-    item_code = models.CharField(max_length=50)
+    item_code = models.CharField(max_length=50,
+                                 default='No corresponding OSS feature.')
     description = models.CharField(max_length=128, default='Description.')
 
     def __unicode__(self):
