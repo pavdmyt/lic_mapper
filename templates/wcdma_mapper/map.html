@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	
+	<head>
+		<title>WCDMA Mapper</title>
+	</head>
+
+	<body>
+		<h2>{{ ra_item.item_code }}</h2>
+		{% if ra_item %}
+			{% if f_id %}
+				{% if oss_item %}
+				<ul>
+					{% for item in oss_item %}
+					<li>{{ item.feature_id.feature_id }} -- {{ item.item_code }} -- {{ item.description }}</li>
+					{% endfor %}
+				</ul>
+				{% else %}
+					<strong>No OSS items.</strong>
+				{% endif %}
+			{% else %}
+				<strong>No Feature IDs.</strong>
+			{% endif %}
+		{% else %}
+			The specified RA item {{ ra_item.item_code }} does not exist!
+		{% endif %}
+	</body>
+
+</html>
