@@ -6,11 +6,11 @@ def index(request):
     return render(request, 'wcdma_mapper/index.html')
 
 
-def map_page(request, ra_item_input):
+def map_page(request, code):
     context = {}
 
     try:
-        ra_item = RAitem.objects.get(item_code=ra_item_input)
+        ra_item = RAitem.objects.get(item_code=code)
         context['ra_item'] = ra_item
 
         # Retrieve associated feature IDs.
@@ -24,3 +24,8 @@ def map_page(request, ra_item_input):
         pass
 
     return render(request, 'wcdma_mapper/map.html', context)
+
+
+def map_nopage(request, code):
+    context = {'ra_item': code}
+    return render(request, 'wcdma_mapper/map_nopage.html', context)
