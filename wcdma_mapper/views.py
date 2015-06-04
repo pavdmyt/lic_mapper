@@ -1,5 +1,8 @@
 from django.shortcuts import render
+from django.http import HttpResponseRedirect
+
 from wcdma_mapper.models import RAitem, FeatureID, OSSitem
+from wcdma_mapper.forms import MapForm
 
 
 def index(request):
@@ -29,3 +32,17 @@ def map_page(request, code):
 def map_nopage(request, code):
     context = {'ra_item': code}
     return render(request, 'wcdma_mapper/map_nopage.html', context)
+
+
+def map_form(request):
+    if request.method == 'POST':
+        form = MapForm(request.POST)
+
+        if form.is_valid():
+            ra_item_code = form.cleaned_data.get('ra_item')
+            return HttpResponseRedirect(ra_item_code + '/')
+
+    else:
+        form = MapForm()
+
+    return render(request, 'wcdma_mapper/map_form.html', {'form': form})
