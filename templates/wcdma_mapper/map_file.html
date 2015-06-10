@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>WCDMA Mapper</title>
+    </head>
+
+    <body>
+
+        <form method="post"
+              action="/wcdma_mapper/map_from_file/"
+              enctype="multipart/form-data">
+
+            {% csrf_token %}
+            {{ form }}
+
+            <br><br>
+            <input type="submit" value="Fetch data from file">
+        </form>
+
+    </body>
+
+</html>
