@@ -6,8 +6,8 @@ django.setup()
 
 from wcdma_mapper.models import RAitem, FeatureID, OSSitem
 
-# Parsed data.
-from parse.xlsx_parser import ra_dct, f_id_dct
+# Parse data.
+from parse.xlsx_parser import parse_ra, parse_f_id
 
 
 def populate():
@@ -60,6 +60,8 @@ def populate():
 
 
 def populate_with_parsed_data():
+    ra_dct = parse_ra()
+    f_id_dct = parse_f_id()
 
     # RA items
     for item in ra_dct.keys():

@@ -5,7 +5,7 @@ from wcdma_mapper.models import RAitem, FeatureID, OSSitem
 from wcdma_mapper.forms import MapForm, UploadFileForm
 
 # Function to handle uploaded file.
-# from somewhere import get_file_data
+from parse.xlsx_parser import get_file_data
 
 
 def index(request):
@@ -58,9 +58,9 @@ def upload_file(request):
         form = UploadFileForm(request.POST, request.FILES)
 
         if form.is_valid():
-            # file_data = get_file_data(request.FILES['file'])
-            # Dummy data while `get_file_data` not implemented.
-            file_data = ['RU00104.T', 'RU00409.T', 'spam!', 'RU00318.T']
+
+            fname = form.cleaned_data.get('file').name
+            file_data = get_file_data(request.FILES['file'], fname)
             context['file_data'] = []
 
             for item_code in file_data:

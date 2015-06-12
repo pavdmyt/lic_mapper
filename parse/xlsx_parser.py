@@ -3,19 +3,26 @@ import sys
 import xlrd
 
 
-def get_sheet(excel_fname, sheet_name):
+def get_sheet(excel_fname, sheet_name=None):
     """
     Get sheet specified in `sheet_name` from excel file `excel_fname`.
     """
     book = xlrd.open_workbook(excel_fname)
 
-    if sheet_name in book.sheet_names():
-        sheet = book.sheet_by_name(sheet_name)
-        return sheet
+    if sheet_name:
+
+        if sheet_name in book.sheet_names():
+            sheet = book.sheet_by_name(sheet_name)
+            return sheet
+        else:
+            print("ERROR: Sheet '{0}' cannot be found in workbook '{1}'".format(
+                   sheet_name, excel_fname))
+            sys.exit(1)
+
     else:
-        print("ERROR: Sheet '{0}' cannot be found in workbook '{1}'".format(
-               sheet_name, excel_fname))
-        sys.exit(1)
+        # Get the first worksheet.
+        sheet = book.sheet_by_index(0)
+        return sheet
 
 
 def get_row_slice(xlrd_sheet, start_row):
@@ -92,6 +99,36 @@ def parse_sheet(xlrd_sheet):
     return res_dict
 
 
+def get_file_data(upl_file_obj, fname):
+    """
+    Takes UploadedFile object and returns a list
+    of item codes it contains.
+    """
+    res_lst = []
+
+    # Check whether given file is an EXCEL file.
+    match_obj = re.match(r'^[\w]+\.xls[xm]?$', fname)
+    if not match_obj:
+        return res_lst
+
+    # Write file to media/tmp/
+    from django.core.files.storage import default_storage
+
+    with open(default_storage.path('tmp/' + fname), 'wb+') as destination:
+        for chunk in upl_file_obj.chunks():
+            destination.write(chunk)
+
+    # Fetch data from file.
+    sheet = get_sheet('media/tmp/' + fname)
+    column = sheet.col(0)  # grab 1st col
+    for item in column:
+        res_lst.append(item.value)
+
+    # !!!TODO: consider removing files from media/tmp/
+
+    return res_lst
+
+
 class SalesItem(object):
 
     def __init__(self, code, description=None):
@@ -115,18 +152,28 @@ class SalesItem(object):
 
 
 #######################################################################
-# Actual parsing.
+# Actual parsing. (Time being solution with hardcodded path).
 
-# RA -> RAN mapping.
-fname = 'parse/File1.xlsx'
-sheet_name = 'Sheet1'
+# !!!TODO: consider usage of only one func
+#          make things smarter.
 
-ra_sheet = get_sheet(fname, sheet_name)
-ra_dct = parse_sheet(ra_sheet)
+def parse_ra():
+    """
+    RA -> RAN mapping.
+    """
+    fname = 'parse/File1.xlsx'
+    sheet_name = 'Sheet1'
 
-# RAN -> OSS mapping.
-fname = 'parse/File2.xlsx'
-sheet_name = 'Sheet1'
+    ra_sheet = get_sheet(fname, sheet_name)
+    return parse_sheet(ra_sheet)
 
-ran_sheet = get_sheet(fname, sheet_name)
-f_id_dct = parse_sheet(ran_sheet)
+
+def parse_f_id():
+    """
+    RAN -> OSS mapping.
+    """
+    fname = 'parse/File2.xlsx'
+    sheet_name = 'Sheet1'
+
+    ran_sheet = get_sheet(fname, sheet_name)
+    return parse_sheet(ran_sheet)

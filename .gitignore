@@ -3,6 +3,7 @@
 
 # Project specific
 code_regex/
+media/tmp/
 population_script_orig.py
 *.sqlite3
 *.xlsx

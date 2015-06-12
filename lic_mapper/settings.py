@@ -90,3 +90,8 @@ STATIC_URL = '/static/'
 TEMPLATE_DIRS = (
     TEMPLATE_PATH,
 )
+
+
+# Uploaded files storage
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
