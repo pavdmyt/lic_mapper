@@ -9,17 +9,28 @@
         {% if file_data %}
 
             {% for item_seq in file_data %}
-                <h2>{{ item_seq.ra_item.item_code }}</h2>
 
-                <ul>
-                    {% for item in item_seq.oss_item %}
-                    <li>{{ item.feature_id.feature_id }} -- {{ item.item_code }} -- {{ item.description }}</li>
-                    {% endfor %}
-                </ul>
+                {% if item_seq.ra_item %}
+                    <h2>{{ item_seq.ra_item.item_code }}</h2>
+                {% else %}
+                    <h2>{{ item_seq.code }}</h2>
+                    <ul>
+                        <li>The specified RA item cannot be found in the database.</li>
+                    </ul>
+                {% endif %}
+
+                {% if item_seq.oss_item %}
+                    <ul>
+                        {% for item in item_seq.oss_item %}
+                        <li>{{ item.feature_id.feature_id }} -- {{ item.item_code }} -- {{ item.description }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
             {% endfor %}
 
         {% else %}
-            <strong><u>file_data</u> is empty!</strong>
+            <b>file_data</b> is empty!<br><br>
         {% endif %}
 
         <a href="/wcdma_mapper/">Home</a>
